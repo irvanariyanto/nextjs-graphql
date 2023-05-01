@@ -1,9 +1,11 @@
-import { createSchema, createYoga } from 'graphql-yoga'
+import { ApolloServer } from '@apollo/server'
+import { startServerAndCreateNextHandler } from '@as-integrations/next'
+import { gql } from 'graphql-tag'
 
-const typeDefs = `
-    type Query {
-        hello(name: String): String!
-    }
+const typeDefs = gql`
+  type Query {
+    hello(name: String): String!
+  }
 `
 
 const resolvers = {
@@ -12,12 +14,6 @@ const resolvers = {
   },
 }
 
-const schema = createSchema({
-  typeDefs,
-  resolvers,
-})
+const server = new ApolloServer({ typeDefs, resolvers })
 
-export default createYoga({
-  schema,
-  graphqlEndpoint: '/api/graphql',
-})
+export default startServerAndCreateNextHandler(server)
