@@ -1,25 +1,20 @@
-import useSWR from 'swr'
+import { useQuery, gql } from '@apollo/client'
 
-const fetcher = (query: string) =>
-  fetch('api/graphql', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ query }),
-  })
-    .then((res) => res.json())
-    .then((json) => json.data)
+const HELLO_QUERY = gql`
+  query HelloQuery {
+    hello
+  }
+`
 
 type Data = {
   hello: string
 }
 
 export default function Home() {
-  const { data, error, isLoading } = useSWR<Data>('{hello}', fetcher)
+  const { data, error, loading } = useQuery<Data>(HELLO_QUERY)
 
   if (error) return <div>failed to load</div>
-  if (isLoading) return <div>loading...</div>
+  if (loading) return <div>loading...</div>
   if (!data) return null
 
   const { hello } = data
